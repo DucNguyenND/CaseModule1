@@ -1,7 +1,7 @@
 const WIDTH_HEART=50;
 const HEIGHT_HEART=50;
 const IMG_HEART="heart.png"
-const HP_HEART=20
+const HP_HEART=50
 const SPEED_HEART=1
 
 class Heart{

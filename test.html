@@ -30,6 +30,7 @@
     let hearts=[]
     let tenlua = new Tenlua(x,y)
     soundCrash = new sound("bup.mp3")
+    soundScore= new sound("score.mp3")
     let ctx = canvas.getContext("2d");
     let img=new Image();
     img.src="bg.jpg";
@@ -100,8 +101,8 @@ setInterval(creatShoot,200);
                 if (kiemTraVaCham(bullets[j], chickens[i])) {
                     chickens[i].hp -= bullets[j].dmg;
                     bullets.splice(j, 1);
-                    soundCrash.play();
                     if (chickens[i].hp <= 0) {
+                        soundScore.play();
                         score++;
                         chickens.splice(i, 1);
                     }
@@ -142,9 +143,8 @@ setInterval(creatShoot,200);
     function vaChamTenLuaVoiHeart(){
         for (let i = 0; i < hearts.length; i++) {
             if (kiemTraVaCham(hearts[i], tenlua)) {
-                hearts.splice(i, 1);
                 tenlua.hp += hearts[i].hp;
-                soundCrash.play();
+                hearts.splice(i, 1);
             }
         }
     }

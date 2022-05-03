@@ -17,7 +17,11 @@ class Tenlua{
     }
     drawTL(){
         if(this.hp<0){
-            this.hp=0;}
+            this.hp=0;
+        }
+        if (this.hp>150){
+        this.hp=150;
+        }
         ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
         ctx.beginPath();
         ctx.fillStyle="red";
