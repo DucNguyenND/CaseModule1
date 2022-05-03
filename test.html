@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/chicken.js"></script>
+    <script src="js/tenlua.js"></script>
+    <script src="js/bullet.js"></script>
+    <script src="js/sound.js"></script>
+    <script src="js/heart.js"></script>
+
+</head>
+<body>
+<audio id="audio"></audio>
+<canvas id="myCanvas" width="1200" height="1400"></canvas>
+</body>
+</html>
+<script>
+    const WIDTH_CANVAS = 800;
+    const HEIGHT_CANVAS = 600;
+    let canvas = document.getElementById("myCanvas");
+    canvas.width = WIDTH_CANVAS;
+    canvas.height = HEIGHT_CANVAS;
+    let x=350
+    let y=530
+    let a=0
+    let score=0
+    let chickens = []
+    let bullets = []
+    let hearts=[]
+    let tenlua = new Tenlua(x,y)
+    soundCrash = new sound("bup.mp3")
+    let ctx = canvas.getContext("2d");
+    let img=new Image();
+    img.src="bg.jpg";
+    img.onload=function (){
+        ctx.drawImage(img,0,0,800,600);
+    }
+    function drawScore() {
+        ctx.font = '20px Georgia';
+        ctx.fillText("Score: " + score, 5, 580);
+    }
+    function drawBg(){
+        ctx.drawImage(img,0,0,800,600);
+    }
+    function randomNumber(min, max){
+        return Math.floor(Math.random()*(max - min))+min
+    }
+    function creatChicken() {
+        let chicken = new Chicken(randomNumber(WIDTH_CHICKEN, canvas.width- WIDTH_CHICKEN),0 );
+        chickens.push(chicken);
+    }
+    setInterval(creatChicken, 2000);
+    function randomChickenMove() {
+        for (let i = 0; i < chickens.length; i++) {
+            chickens[i].moveChicken();
+            chickens[i].drawChicken();
+            if (chickens[i].y >= 600) {
+                chickens.splice(i, 1);
+                tenlua.hp-=chickens[i].hp;
+                soundCrash.play();
+            }
+        }
+    }
+
+    document.addEventListener("keydown", key => {
+        if (key.keyCode == 65) {
+            tenlua.moveL()
+        } else if (key.keyCode == 68) {
+            tenlua.moveR()
+        }})
+
+    function creatShoot() {
+        let bullet = new Bullet(tenlua.x +8, tenlua.y - 15);
+        bullets.push(bullet);
+    }
+
+    function drawBullet() {
+        for (let i = 0; i < bullets.length; i++) {
+            bullets[i].drawBullet();
+            bullets[i].moveBullet();
+        }
+    }
+setInterval(creatShoot,200);
+    function kiemTraVaCham(a, b) {
+        if (((a.y + a.height) < (b.y)) ||
+            (a.y > (b.y + b.height)) ||
+            ((a.x + a.width) < b.x) ||
+            (a.x > (b.x + b.width))
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+    function vaChamDanVoiGa() {
+        for (let i = 0; i < chickens.length; i++) {
+            for (let j = 0; j < bullets.length; j++) {
+                if (kiemTraVaCham(bullets[j], chickens[i])) {
+                    chickens[i].hp -= bullets[j].dmg;
+                    bullets.splice(j, 1);
+                    soundCrash.play();
+                    if (chickens[i].hp <= 0) {
+                        score++;
+                        chickens.splice(i, 1);
+                    }
+                }
+            }
+        }
+    }
+    function vaChamGaVoiTenlua() {
+        for (let i = 0; i < chickens.length; i++) {
+            if (kiemTraVaCham(chickens[i], tenlua)) {
+                chickens.splice(i, 1);
+                tenlua.hp -= chickens[i].dmg;
+                soundCrash.play();
+            }
+        }
+    }
+    function checkOver(){
+        if(tenlua.hp<=0){
+            return false;
+        } else {
+            return true
+        }
+    }
+    function creatHeart() {
+        let heart = new Heart(randomNumber(WIDTH_HEART, canvas.width- WIDTH_HEART),0 );
+        hearts.push(heart);
+    }
+    function randomHeartMove() {
+        for (let i = 0; i < hearts.length; i++) {
+            hearts[i].drawHeart();
+            hearts[i].moveHeart();
+            if (hearts[i].y >= 600) {
+                hearts.splice(i, 1);
+            }
+        }
+    }
+    setInterval(creatHeart,10000)
+    function vaChamTenLuaVoiHeart(){
+        for (let i = 0; i < hearts.length; i++) {
+            if (kiemTraVaCham(hearts[i], tenlua)) {
+                hearts.splice(i, 1);
+                tenlua.hp += hearts[i].hp;
+                soundCrash.play();
+            }
+        }
+    }
+    window.onload = function draw() {
+        if (checkOver()) {
+            requestAnimationFrame(draw);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBg();
+            randomChickenMove();
+            randomHeartMove();
+            drawScore();
+            drawBullet();
+            vaChamGaVoiTenlua();
+            vaChamTenLuaVoiHeart();
+            vaChamDanVoiGa();
+            tenlua.drawTL();
+        }
+        else {
+            alert("Game over!");
+            alert("Số điểm bạn đạt được là: " + score);
+            window.location.reload();
+        }
+    }
+</script>
