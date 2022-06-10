@@ -45,7 +45,7 @@ public class LoginAccount {
 
         }
         if (checkguest==1){
-            ManagerGuest2.managerGuest2(computers,cartguest,nameLogin,nameID,computerscartguest);
+            ManagerGuest2.managerGuest2(computers,cartguest,nameLogin,nameID,computerscartguest,guests);
             break;
         }else if (checkstaff==1){
             ManagerStaff.menuStaff(computers,nameLogin,guests);

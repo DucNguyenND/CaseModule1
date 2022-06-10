@@ -2,10 +2,8 @@ package Colltrollers;
 
 import Models.Computer;
 import Models.ComputerGuest;
-import io.ValidateChoice;
-import io.WriteAndReadCartGuest;
-import io.WriteAndReadComputerCartGuest;
-import io.WriteAndReadStaff;
+import Models.Guest;
+import io.*;
 
 import java.util.List;
 import java.util.Scanner;
@@ -14,7 +12,7 @@ public class ManagerGuest2 {
     static WriteAndReadCartGuest writeAndReadCartGuest=new WriteAndReadCartGuest();
     static WriteAndReadStaff writeAndReadStaff=new WriteAndReadStaff();
     static Scanner scannerGuest=new Scanner(System.in);
-    public static void managerGuest2(List<Computer> computers, List<ComputerGuest> cartguest, String nameLogin, String nameID, List<Computer> computerscartguest){
+    public static void managerGuest2(List<Computer> computers, List<ComputerGuest> cartguest, String nameLogin, String nameID, List<Computer> computerscartguest,List<Guest> guests){
         computers.clear();
         writeAndReadCartGuest.read(cartguest);
         writeAndReadStaff.read(computers);
@@ -25,7 +23,8 @@ public class ManagerGuest2 {
         System.out.println("2. Sắp xếp laptop theo giá");
         System.out.println("3. Xem giỏ hàng");
         System.out.println("4. Thanh toán");
-        System.out.println("5. Đăng xuất");
+        System.out.println("5. Đổi mật khẩu");
+        System.out.println("6. Đăng xuất");
         switch (Integer.parseInt(scannerGuest.nextLine())){
             case 1:
                 computers.sort(new SortByName());
@@ -42,6 +41,9 @@ public class ManagerGuest2 {
                 pay(computerscartguest,computers);
                 break;
             case 5:
+                changePassword(guests,nameID);
+                break;
+            case 6:
                 return;
 
         }
@@ -160,5 +162,31 @@ public class ManagerGuest2 {
             }
         }
         System.out.println("Đã lên đơn thành công. Số tiền bạn cần thanh toán là : " + sumPrice);
+    }
+    public static void changePassword(List<Guest> guests,String nameID){
+        while (true){
+            boolean check=false;
+        System.out.print("Nhập mật khẩu cũ: ");
+        String passwordold=scannerGuest.nextLine();
+        System.out.println("");
+        System.out.print("Nhập mật khẩu mới:");
+        String newpassword=scannerGuest.nextLine();
+        System.out.println("");
+        System.out.print("Xác nhận mật khẩu:");
+        String confimnewpassword=scannerGuest.nextLine();
+        for (int i = 0; i < guests.size(); i++) {
+            if (guests.get(i).getId().equals(nameID)&& guests.get(i).getPassword().equals(passwordold)&&newpassword.equals(confimnewpassword)){
+                guests.get(i).setPassword(newpassword);
+                check=true;
+                break;
+            }
+
+    }
+        if (check){
+            System.out.println("Đổi mật khẩu thành công!");
+            WriteAndReadGuest.write(guests);
+        }else System.out.println("Sai mật khẩu hoặc mật khẩu mới không trùng khớp");
+        break;
+        }
     }
 }

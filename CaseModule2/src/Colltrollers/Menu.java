@@ -38,10 +38,10 @@ public class Menu {
                                 Register.register(guests);
                             }
                             break;
-                        } else System.out.println("Vui lòng chọn lại111");
+                        } else System.out.println("Vui lòng chọn lại");
                     }
                 } catch (Exception e) {
-                    System.out.println("Vui lòng chọn lại222");
+                    System.out.println("Vui lòng chọn lại");
                 }
             }
         }
